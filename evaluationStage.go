@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"math"
+	"math/big"
 	"reflect"
 	"regexp"
 	"strings"
@@ -105,10 +106,16 @@ func subtractStage(left interface{}, right interface{}, parameters Parameters) (
 	return left.(float64) - right.(float64), nil
 }
 func multiplyStage(left interface{}, right interface{}, parameters Parameters) (interface{}, error) {
-	return left.(float64) * right.(float64), nil
+	bleft := big.NewFloat(left.(float64))
+	bright := big.NewFloat(right.(float64))
+	val, _ := bleft.Mul(bleft, bright).Float64()
+	return val, nil
 }
 func divideStage(left interface{}, right interface{}, parameters Parameters) (interface{}, error) {
-	return left.(float64) / right.(float64), nil
+	bleft := big.NewFloat(left.(float64))
+	bright := big.NewFloat(right.(float64))
+	val, _ := bleft.Quo(bleft, bright).Float64()
+	return val, nil
 }
 func exponentStage(left interface{}, right interface{}, parameters Parameters) (interface{}, error) {
 	return math.Pow(left.(float64), right.(float64)), nil
